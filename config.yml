@@ -1,0 +1,13 @@
+Checks:
+ - Protocol: tcp
+   Parameters:
+     Host: localhost
+     Port: [9000, 30]
+     SecurePort: 
+     Timeout: 10
+ - Protocol: tcp
+   Parameters:
+     Host: localhost
+     Port: [80, 8080]
+     SecurePort: 
+     Timeout: 10 
