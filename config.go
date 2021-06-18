@@ -22,10 +22,11 @@ type Checks struct {
 
 // Parameters
 type Parameters struct {
-	Host       string  `yaml:"Host"`
-	Port       []int   `yaml:"Port"`
-	SecurePort []int   `yaml:"SecurePort"`
-	Timeout    float64 `yaml:"Timeout"`
+	Host              string  `yaml:"Host"`
+	Port              []int   `yaml:"Port"`
+	SecurePort        []int   `yaml:"SecurePort"`
+	Timeout           float64 `yaml:"Timeout"`
+	IgnoreCertificate bool    `yaml:"IgnoreCertificate"`
 }
 
 // NewConfig returns a new decoded Config struct
@@ -72,6 +73,17 @@ func validateAndPrepare(c *Config) ([]checkTcp, error) {
 				if c.Parameters.Timeout > 0 {
 					chk.timeout = c.Parameters.Timeout
 				}
+				if chk.network != "" {
+					r = append(r, chk)
+				}
+			}
+			for _, p := range c.Parameters.SecurePort {
+				chk.network = fmt.Sprintf("%s:%d", c.Parameters.Host, p)
+				if c.Parameters.Timeout > 0 {
+					chk.timeout = c.Parameters.Timeout
+				}
+				chk.tls = true
+				chk.noCheckCertificate = c.Parameters.IgnoreCertificate
 				if chk.network != "" {
 					r = append(r, chk)
 				}

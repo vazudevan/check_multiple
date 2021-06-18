@@ -40,6 +40,7 @@ func performTCPChecks(c checkTcp, ch chan string) {
 	//conn, err := net.DialTimeout("tcp", c.network, timeout)
 	elapsedSeconds := float64(time.Since(start)) / float64(time.Second)
 	if err != nil {
+		//fmt.Println("Error:", err)
 		e := checkErr(err)
 		c.status = fmt.Sprintf("CRITICAL - %s %s %f", e, c.network, elapsedSeconds)
 		ch <- c.status
@@ -61,6 +62,8 @@ func checkErr(err error) string {
 		return "Connection refused"
 	} else if match, _ := regexp.MatchString(".*timeout.*", err.Error()); match {
 		return "Connection Timeout"
+	} else if match, _ := regexp.MatchString(".*authority.*", err.Error()); match {
+		return "Certificate signed by unknown authority"
 	} else {
 		return "Unkonow error"
 	}
