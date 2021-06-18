@@ -1,0 +1,6 @@
+# Local config and docs
+config.yml
+requirements.txt
+
+# complied stuff
+*.exe
