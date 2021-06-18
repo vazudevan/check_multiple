@@ -18,8 +18,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Output: %v", cfg)
+	tcpChecksToDo, _ := validateAndPrepare(cfg)
 
+	for _, c := range tcpChecksToDo {
+		fmt.Printf("%v", c)
+	}
 }
 
 // ValidateConfigPath just makes sure, that the path provided is a file,

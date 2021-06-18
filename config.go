@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -19,10 +21,16 @@ type Checks struct {
 
 // Parameters
 type Parameters struct {
-	Host       string `yaml:"Host"`
-	Port       []int  `yaml:"Port"`
-	SecurePort []int  `yaml:"SecurePort"`
-	Timeout    int    `yaml:"Timeout"`
+	Host       string  `yaml:"Host"`
+	Port       []int   `yaml:"Port"`
+	SecurePort []int   `yaml:"SecurePort"`
+	Timeout    float64 `yaml:"Timeout"`
+}
+
+//tcp_parametes
+type checkTcp struct {
+	network string
+	timeout float64
 }
 
 // NewConfig returns a new decoded Config struct
@@ -57,4 +65,25 @@ func NewConfig(configPath string) (*Config, error) {
 	}
 
 	return config, nil
+}
+
+func validateAndPrepare(c *Config) ([]checkTcp, error) {
+	r := []checkTcp{}
+	for _, c := range c.Checks {
+		if (strings.ToLower(c.Protocol) == "tcp") && c.Parameters.Host != "" {
+			chk := checkTcp{}
+			for _, p := range c.Parameters.Port {
+				chk.network = fmt.Sprintf("%s:%d", c.Parameters.Host, p)
+				if c.Parameters.Timeout > 0 {
+					chk.timeout = c.Parameters.Timeout
+				} else {
+					chk.timeout = 10
+				}
+			}
+			if chk.network != "" {
+				r = append(r, chk)
+			}
+		}
+	}
+	return r, nil
 }
