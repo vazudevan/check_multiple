@@ -18,11 +18,28 @@ func main() {
 		log.Fatal(err)
 	}
 
-	tcpChecksToDo, _ := validateAndPrepare(cfg)
-
-	for _, c := range tcpChecksToDo {
-		fmt.Printf("%v", c)
+	e := cfg.Validate()
+	if e != nil {
+		fmt.Println("Error:", e)
+		os.Exit(1)
 	}
+
+	tcpChecks, _ := validateAndPrepare(cfg)
+
+	// for _, c := range tcpChecksToDo {
+	// 	fmt.Printf("%v", c)
+	// }
+	ch := make(chan string)
+
+	for _, chk := range tcpChecks {
+		go performTCPChecks(chk, ch)
+		//fmt.Println(chk.status)
+	}
+
+	for i := 0; i < len(tcpChecks); i++ {
+		fmt.Println(<-ch)
+	}
+
 }
 
 // ValidateConfigPath just makes sure, that the path provided is a file,
