@@ -1,4 +1,9 @@
-`connCheck` as name suggests is cross platform connectivity checking tool.   The idea behind this is to perform multiple checks in on and thus differs from monitoring-plugins and alike.
+`multi-check` aims to function as a cross platform tool that perform multiple network level connectivity checks similar to monitoring-plugins.
 
-`connCheck` aims to be provide visibility into required dependencies from and application perspespective running the checks from the local environemnt.  It can also be be called from tools such as nagios/icinga, ansible and  so on.
+The idea behind this tool is to be able to check for loss of network or service dependencies from a perspective of local environment of an application/server.  This is in contrast to remote monitoring polls.  This would help avoid monitoring blind spots such as inter-server connections / dependencies.
 
+`multi-check` differs from monitoring-plugins by these aspects.
+
+* No thresholds for checks
+* Requires a config file to define / declare checks
+* Only 2 output states (OK and PROBLEM)
